@@ -8,24 +8,14 @@ import (
 )
 
 func newRankingCmd() *cobra.Command {
-	var (
-		genreID string
-		age     string
-		sex     string
-		carrier string
-	)
+	var p client.IchibaRankingParams
 
 	c := &cobra.Command{
 		Use:   "ranking",
 		Short: "Get Ichiba item ranking",
 		RunE: func(c *cobra.Command, args []string) error {
 			cl := cmd.LoadRakutenClient()
-			result, err := cl.IchibaRanking(client.IchibaRankingParams{
-				GenreID: genreID,
-				Age:     age,
-				Sex:     sex,
-				Carrier: carrier,
-			})
+			result, err := cl.IchibaRanking(p)
 			if err != nil {
 				cmd.HandleError(err)
 			}
@@ -35,10 +25,12 @@ func newRankingCmd() *cobra.Command {
 	}
 
 	f := c.Flags()
-	f.StringVar(&genreID, "genre-id", "", "Genre ID to rank within")
-	f.StringVar(&age, "age", "", "Age group: 10/20/30/40/50")
-	f.StringVar(&sex, "sex", "", "Sex: 0=all, 1=male, 2=female")
-	f.StringVar(&carrier, "carrier", "", "Carrier: 0=all, 1=PC, 2=mobile, 3=smartphone")
+	f.StringVar(&p.GenreID, "genre-id", "", "Genre ID (cannot combine with --age or --sex)")
+	f.StringVar(&p.Age, "age", "", "Age group: 10/20/30/40/50 (cannot combine with --genre-id)")
+	f.IntVar(&p.Sex, "sex", 0, "0=male, 1=female (use with --age)")
+	f.IntVar(&p.Carrier, "carrier", 0, "0=PC, 1=mobile")
+	f.IntVar(&p.Page, "page", 1, "Page number (1-34, 30 items per page)")
+	f.StringVar(&p.Period, "period", "", "Set to 'realtime' for real-time ranking")
 
 	return c
 }

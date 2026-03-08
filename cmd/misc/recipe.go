@@ -8,10 +8,7 @@ import (
 )
 
 func newRecipeCmd() *cobra.Command {
-	var (
-		categoryType string
-		categoryID   string
-	)
+	var categoryType string
 
 	c := &cobra.Command{
 		Use:   "recipe",
@@ -20,7 +17,6 @@ func newRecipeCmd() *cobra.Command {
 			cl := cmd.LoadRakutenClient()
 			result, err := cl.RecipeCategoryList(client.RecipeParams{
 				CategoryType: categoryType,
-				CategoryID:   categoryID,
 			})
 			if err != nil {
 				cmd.HandleError(err)
@@ -32,7 +28,6 @@ func newRecipeCmd() *cobra.Command {
 
 	f := c.Flags()
 	f.StringVar(&categoryType, "category-type", "", "Category type: large/medium/small")
-	f.StringVar(&categoryID, "category-id", "", "Category ID")
 
 	return c
 }

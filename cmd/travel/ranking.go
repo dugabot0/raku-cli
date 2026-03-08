@@ -8,16 +8,14 @@ import (
 )
 
 func newRankingCmd() *cobra.Command {
-	var genre string
+	var p client.TravelRankingParams
 
 	c := &cobra.Command{
 		Use:   "ranking",
 		Short: "Get hotel ranking",
 		RunE: func(c *cobra.Command, args []string) error {
 			cl := cmd.LoadRakutenClient()
-			result, err := cl.TravelHotelRanking(client.TravelRankingParams{
-				Genre: genre,
-			})
+			result, err := cl.TravelHotelRanking(p)
 			if err != nil {
 				cmd.HandleError(err)
 			}
@@ -27,7 +25,8 @@ func newRankingCmd() *cobra.Command {
 	}
 
 	f := c.Flags()
-	f.StringVar(&genre, "genre", "", "Ranking genre: all/onsen/business/ski/pet")
+	f.StringVar(&p.Genre, "genre", "all", "Ranking genre: all/onsen/premium (comma-separated for multiple)")
+	f.IntVar(&p.Carrier, "carrier", 0, "0=PC/smartphone, 1=feature phone")
 
 	return c
 }

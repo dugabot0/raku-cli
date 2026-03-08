@@ -158,16 +158,22 @@ func (c *Client) IchibaGenreSearch(p IchibaGenreSearchParams) (json.RawMessage, 
 
 type IchibaRankingParams struct {
 	GenreID string
-	Age     string
-	Sex     string
-	Carrier string
+	Age     string // 10/20/30/40/50 (cannot combine with genreId)
+	Sex     int    // 0=male, 1=female
+	Carrier int    // 0=PC, 1=mobile
+	Page    int    // 1-34
+	Period  string // "realtime" for real-time ranking
 }
 
 func (c *Client) IchibaRanking(p IchibaRankingParams) (json.RawMessage, error) {
 	params := c.baseParams()
 	setIfNonEmpty(params, "genreId", p.GenreID)
 	setIfNonEmpty(params, "age", p.Age)
-	setIfNonEmpty(params, "sex", p.Sex)
-	setIfNonEmpty(params, "carrier", p.Carrier)
+	setIntFlag(params, "sex", p.Sex)
+	setIntFlag(params, "carrier", p.Carrier)
+	if p.Page > 0 {
+		params.Set("page", fmt.Sprint(p.Page))
+	}
+	setIfNonEmpty(params, "period", p.Period)
 	return c.ichibaGet(ichibaRankingStd, ichibaRankingNew, params)
 }

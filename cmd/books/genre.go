@@ -8,16 +8,14 @@ import (
 )
 
 func newGenreCmd() *cobra.Command {
-	var genreID string
+	var p client.BooksGenreSearchParams
 
 	c := &cobra.Command{
 		Use:   "genre",
 		Short: "Search Books genre information",
 		RunE: func(c *cobra.Command, args []string) error {
 			cl := cmd.LoadRakutenClient()
-			result, err := cl.BooksGenreSearch(client.BooksGenreSearchParams{
-				GenreID: genreID,
-			})
+			result, err := cl.BooksGenreSearch(p)
 			if err != nil {
 				cmd.HandleError(err)
 			}
@@ -27,7 +25,8 @@ func newGenreCmd() *cobra.Command {
 	}
 
 	f := c.Flags()
-	f.StringVar(&genreID, "genre-id", "001", "Books genre ID")
+	f.StringVar(&p.GenreID, "genre-id", "001", "Books genre ID (000=root)")
+	f.IntVar(&p.GenrePath, "genre-path", 0, "1=include ancestor genres in response")
 
 	return c
 }

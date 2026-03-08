@@ -8,34 +8,14 @@ import (
 )
 
 func newHotelsCmd() *cobra.Command {
-	var (
-		largeArea    string
-		middleArea   string
-		smallArea    string
-		hotelNo      string
-		latitude     string
-		longitude    string
-		searchRadius string
-		page         int
-		hits         int
-	)
+	var p client.TravelHotelSearchParams
 
 	c := &cobra.Command{
 		Use:   "hotels",
 		Short: "Search hotels (simple search)",
 		RunE: func(c *cobra.Command, args []string) error {
 			cl := cmd.LoadRakutenClient()
-			result, err := cl.TravelSimpleHotelSearch(client.TravelHotelSearchParams{
-				LargeArea:    largeArea,
-				MiddleArea:   middleArea,
-				SmallArea:    smallArea,
-				HotelNo:      hotelNo,
-				Latitude:     latitude,
-				Longitude:    longitude,
-				SearchRadius: searchRadius,
-				Page:         page,
-				Hits:         hits,
-			})
+			result, err := cl.TravelSimpleHotelSearch(p)
 			if err != nil {
 				cmd.HandleError(err)
 			}
@@ -45,15 +25,22 @@ func newHotelsCmd() *cobra.Command {
 	}
 
 	f := c.Flags()
-	f.StringVar(&largeArea, "large-area", "", "Large area code (e.g. hokkaido)")
-	f.StringVar(&middleArea, "middle-area", "", "Middle area code")
-	f.StringVar(&smallArea, "small-area", "", "Small area code")
-	f.StringVar(&hotelNo, "hotel-no", "", "Hotel number")
-	f.StringVar(&latitude, "latitude", "", "Latitude for location search")
-	f.StringVar(&longitude, "longitude", "", "Longitude for location search")
-	f.StringVar(&searchRadius, "search-radius", "", "Search radius (km) for location search")
-	f.IntVar(&page, "page", 1, "Page number")
-	f.IntVar(&hits, "hits", 30, "Results per page (1-30)")
+	f.StringVar(&p.LargeArea, "large-area", "", "Large area code (e.g. japan)")
+	f.StringVar(&p.MiddleArea, "middle-area", "", "Middle area code (prefecture)")
+	f.StringVar(&p.SmallArea, "small-area", "", "Small area code (city)")
+	f.StringVar(&p.DetailArea, "detail-area", "", "Detail area code (station/district)")
+	f.StringVar(&p.HotelNo, "hotel-no", "", "Hotel number(s), comma-separated (max 15)")
+	f.StringVar(&p.Latitude, "latitude", "", "Latitude (requires --longitude and --search-radius)")
+	f.StringVar(&p.Longitude, "longitude", "", "Longitude (requires --latitude and --search-radius)")
+	f.StringVar(&p.SearchRadius, "search-radius", "", "Search radius in km (0.1-3.0)")
+	f.StringVar(&p.SqueezeCondition, "squeeze", "", "Filters: kinen,internet,daiyoku,onsen (comma-separated)")
+	f.StringVar(&p.Sort, "sort", "", "Sort: standard/+roomCharge/-roomCharge")
+	f.StringVar(&p.ResponseType, "response-type", "", "Detail level: small/middle/large")
+	f.IntVar(&p.HotelThumbnailSize, "thumbnail-size", 0, "Image size: 1=small, 2=medium, 3=large")
+	f.IntVar(&p.DatumType, "datum-type", 0, "Coordinate system: 1=WGS84 (degrees), 2=Tokyo Datum (seconds)")
+	f.IntVar(&p.Carrier, "carrier", 0, "0=PC/smartphone, 1=feature phone")
+	f.IntVar(&p.Page, "page", 1, "Page number (1-100)")
+	f.IntVar(&p.Hits, "hits", 30, "Results per page (1-30)")
 
 	return c
 }
