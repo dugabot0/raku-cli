@@ -54,6 +54,9 @@ rakuten:
 
 ```bash
 export RAKUTEN_APP_ID="your-app-id"
+export RAKUTEN_AFFILIATE_ID="your-affiliate-id"
+export RAKUTEN_ACCESS_KEY="pk_..."
+export RAKUTEN_ORIGIN="https://www.example.com"
 ```
 
 ## 対応API
