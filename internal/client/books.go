@@ -121,5 +121,5 @@ func (c *Client) BooksGenreSearch(p BooksGenreSearchParams) (json.RawMessage, er
 	params := c.baseParams()
 	setIfNonEmpty(params, "booksGenreId", p.GenreID)
 	setIntFlag(params, "genrePath", p.GenrePath)
-	return c.get("BooksGenre/Search/20170404", params)
+	return c.get("BooksGenre/Search/20121128", params)
 }

@@ -7,7 +7,7 @@ import (
 
 const (
 	ichibaItemSearchEndpoint  = "IchibaItem/Search/20220601"
-	ichibaGenreSearchEndpoint = "IchibaGenre/Search/20220601"
+	ichibaGenreSearchEndpoint = "IchibaGenre/Search/20170711"
 	ichibaRankingEndpoint     = "IchibaItem/Ranking/20220601"
 )
 
@@ -136,7 +136,7 @@ type IchibaGenreSearchParams struct {
 func (c *Client) IchibaGenreSearch(p IchibaGenreSearchParams) (json.RawMessage, error) {
 	params := c.baseParams()
 	setIfNonEmpty(params, "genreId", p.GenreID)
-	return c.ichibaGet(ichibaGenreSearchEndpoint, params)
+	return c.ichibaGenreGet(ichibaGenreSearchEndpoint, params)
 }
 
 // --- Ichiba Ranking ---
@@ -160,5 +160,5 @@ func (c *Client) IchibaRanking(p IchibaRankingParams) (json.RawMessage, error) {
 		params.Set("page", fmt.Sprint(p.Page))
 	}
 	setIfNonEmpty(params, "period", p.Period)
-	return c.ichibaGet(ichibaRankingEndpoint, params)
+	return c.ichibaRankingGet(ichibaRankingEndpoint, params)
 }

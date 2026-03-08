@@ -8,13 +8,14 @@ import (
 	"time"
 )
 
+// Each API group has its own base URL on openapi.rakuten.co.jp
 const (
-	// Standard APIs (Books, Kobo, Recipe, ...)
-	servicesBaseURL = "https://openapi.rakuten.co.jp/services/api/"
-	// Travel, GORA
-	engineBaseURL = "https://openapi.rakuten.co.jp/engine/api/"
-	// Ichiba
-	ichibaOpenAPIURL = "https://openapi.rakuten.co.jp/ichibams/api/"
+	ichibaItemsBaseURL   = "https://openapi.rakuten.co.jp/ichibams/api/"
+	ichibaGenreBaseURL   = "https://openapi.rakuten.co.jp/ichibagt/api/"
+	ichibaRankingBaseURL = "https://openapi.rakuten.co.jp/ichibaranking/api/"
+	servicesBaseURL      = "https://openapi.rakuten.co.jp/services/api/"
+	engineBaseURL        = "https://openapi.rakuten.co.jp/engine/api/"
+	recipeBaseURL        = "https://openapi.rakuten.co.jp/recipems/api/"
 )
 
 // Client handles requests to the Rakuten Web Service API.
@@ -51,19 +52,31 @@ func (c *Client) baseParams() url.Values {
 	return p
 }
 
-// get calls the Books/Kobo/Recipe endpoint (openapi.rakuten.co.jp/services/api/).
+func (c *Client) ichibaGet(endpoint string, params url.Values) (json.RawMessage, error) {
+	return c.fetch(ichibaItemsBaseURL + endpoint + "?" + params.Encode())
+}
+
+func (c *Client) ichibaGenreGet(endpoint string, params url.Values) (json.RawMessage, error) {
+	return c.fetch(ichibaGenreBaseURL + endpoint + "?" + params.Encode())
+}
+
+func (c *Client) ichibaRankingGet(endpoint string, params url.Values) (json.RawMessage, error) {
+	return c.fetch(ichibaRankingBaseURL + endpoint + "?" + params.Encode())
+}
+
+// get uses services base URL (Books, Kobo, BooksGenre, ...)
 func (c *Client) get(endpoint string, params url.Values) (json.RawMessage, error) {
 	return c.fetch(servicesBaseURL + endpoint + "?" + params.Encode())
 }
 
-// engineGet calls the Travel/GORA endpoint (openapi.rakuten.co.jp/engine/api/).
+// engineGet uses engine base URL (Travel, GORA)
 func (c *Client) engineGet(endpoint string, params url.Values) (json.RawMessage, error) {
 	return c.fetch(engineBaseURL + endpoint + "?" + params.Encode())
 }
 
-// ichibaGet calls the Ichiba endpoint (openapi.rakuten.co.jp/ichibams/api/).
-func (c *Client) ichibaGet(endpoint string, params url.Values) (json.RawMessage, error) {
-	return c.fetch(ichibaOpenAPIURL + endpoint + "?" + params.Encode())
+// recipeGet uses recipe base URL
+func (c *Client) recipeGet(endpoint string, params url.Values) (json.RawMessage, error) {
+	return c.fetch(recipeBaseURL + endpoint + "?" + params.Encode())
 }
 
 func (c *Client) fetch(u string) (json.RawMessage, error) {

@@ -14,7 +14,7 @@ type RecipeParams struct {
 func (c *Client) RecipeCategoryList(p RecipeParams) (json.RawMessage, error) {
 	params := c.baseParams()
 	setIfNonEmpty(params, "categoryType", p.CategoryType)
-	return c.get("Recipe/CategoryList/20170426", params)
+	return c.recipeGet("Recipe/CategoryList/20170426", params)
 }
 
 // --- Kobo Ebook Search ---
