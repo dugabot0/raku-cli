@@ -55,7 +55,7 @@ func (c *Client) TravelSimpleHotelSearch(p TravelHotelSearchParams) (json.RawMes
 	if p.Hits > 0 {
 		params.Set("hits", fmt.Sprint(p.Hits))
 	}
-	return c.get("Travel/SimpleHotelSearch/20170426", params)
+	return c.engineGet("Travel/SimpleHotelSearch/20170426", params)
 }
 
 // --- Travel Hotel Detail Search ---
@@ -67,7 +67,7 @@ type TravelHotelDetailParams struct {
 func (c *Client) TravelHotelDetail(p TravelHotelDetailParams) (json.RawMessage, error) {
 	params := c.baseParams()
 	setIfNonEmpty(params, "hotelNo", p.HotelNo)
-	return c.get("Travel/HotelDetailSearch/20170426", params)
+	return c.engineGet("Travel/HotelDetailSearch/20170426", params)
 }
 
 // --- Travel Vacant Hotel Search ---
@@ -162,14 +162,14 @@ func (c *Client) TravelVacantHotelSearch(p TravelVacantParams) (json.RawMessage,
 	if p.Hits > 0 {
 		params.Set("hits", fmt.Sprint(p.Hits))
 	}
-	return c.get("Travel/VacantHotelSearch/20170426", params)
+	return c.engineGet("Travel/VacantHotelSearch/20170426", params)
 }
 
 // --- Travel Area Class ---
 
 func (c *Client) TravelGetAreaClass() (json.RawMessage, error) {
 	params := c.baseParams()
-	return c.get("Travel/GetAreaClass/20140210", params)
+	return c.engineGet("Travel/GetAreaClass/20140210", params)
 }
 
 // --- Travel Hotel Ranking ---
@@ -183,5 +183,5 @@ func (c *Client) TravelHotelRanking(p TravelRankingParams) (json.RawMessage, err
 	params := c.baseParams()
 	setIfNonEmpty(params, "genre", p.Genre)
 	setIntFlag(params, "carrier", p.Carrier)
-	return c.get("Travel/HotelRanking/20170426", params)
+	return c.engineGet("Travel/HotelRanking/20170426", params)
 }

@@ -9,16 +9,20 @@ import (
 )
 
 const (
-	rakutenBaseURL      = "https://app.rakuten.co.jp/services/api/"
-	ichibaOpenAPIURL    = "https://openapi.rakuten.co.jp/ichibams/api/"
+	// Standard APIs (Books, Kobo, Recipe, ...)
+	servicesBaseURL = "https://openapi.rakuten.co.jp/services/api/"
+	// Travel, GORA
+	engineBaseURL = "https://openapi.rakuten.co.jp/engine/api/"
+	// Ichiba
+	ichibaOpenAPIURL = "https://openapi.rakuten.co.jp/ichibams/api/"
 )
 
 // Client handles requests to the Rakuten Web Service API.
 type Client struct {
 	AppID       string
 	AffiliateID string
-	AccessKey   string // optional; enables Ichiba OpenAPI endpoint
-	Origin      string // optional; sent as Origin header (required by some app registrations)
+	AccessKey   string
+	Origin      string
 	HTTP        *http.Client
 }
 
@@ -33,17 +37,6 @@ func New(appID, affiliateID, accessKey, origin string, timeout time.Duration) *C
 	}
 }
 
-// ichibaGet routes to the OpenAPI endpoint if AccessKey is set,
-// otherwise falls back to the standard Rakuten API.
-func (c *Client) ichibaGet(standardEndpoint, openAPIEndpoint string, params url.Values) (json.RawMessage, error) {
-	if c.AccessKey != "" {
-		params.Set("accessKey", c.AccessKey)
-		u := ichibaOpenAPIURL + openAPIEndpoint + "?" + params.Encode()
-		return c.fetch(u)
-	}
-	return c.get(standardEndpoint, params)
-}
-
 func (c *Client) baseParams() url.Values {
 	p := url.Values{}
 	p.Set("applicationId", c.AppID)
@@ -52,11 +45,25 @@ func (c *Client) baseParams() url.Values {
 	if c.AffiliateID != "" {
 		p.Set("affiliateId", c.AffiliateID)
 	}
+	if c.AccessKey != "" {
+		p.Set("accessKey", c.AccessKey)
+	}
 	return p
 }
 
+// get calls the Books/Kobo/Recipe endpoint (openapi.rakuten.co.jp/services/api/).
 func (c *Client) get(endpoint string, params url.Values) (json.RawMessage, error) {
-	return c.fetch(rakutenBaseURL + endpoint + "?" + params.Encode())
+	return c.fetch(servicesBaseURL + endpoint + "?" + params.Encode())
+}
+
+// engineGet calls the Travel/GORA endpoint (openapi.rakuten.co.jp/engine/api/).
+func (c *Client) engineGet(endpoint string, params url.Values) (json.RawMessage, error) {
+	return c.fetch(engineBaseURL + endpoint + "?" + params.Encode())
+}
+
+// ichibaGet calls the Ichiba endpoint (openapi.rakuten.co.jp/ichibams/api/).
+func (c *Client) ichibaGet(endpoint string, params url.Values) (json.RawMessage, error) {
+	return c.fetch(ichibaOpenAPIURL + endpoint + "?" + params.Encode())
 }
 
 func (c *Client) fetch(u string) (json.RawMessage, error) {
@@ -94,7 +101,7 @@ func (c *Client) fetch(u string) (json.RawMessage, error) {
 type AuthError struct{ StatusCode int }
 
 func (e *AuthError) Error() string {
-	return fmt.Sprintf("authentication error (HTTP %d) — check RAKUTEN_APP_ID", e.StatusCode)
+	return fmt.Sprintf("authentication error (HTTP %d) — check RAKUTEN_APP_ID / RAKUTEN_ACCESS_KEY", e.StatusCode)
 }
 
 // APIError is returned on non-OK HTTP responses.

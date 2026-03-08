@@ -5,14 +5,10 @@ import (
 	"fmt"
 )
 
-// Ichiba endpoint versions
 const (
-	ichibaItemSearchStd  = "IchibaItem/Search/20170706"
-	ichibaItemSearchNew  = "IchibaItem/Search/20220601"
-	ichibaGenreSearchStd = "IchibaGenre/Search/20170711"
-	ichibaGenreSearchNew = "IchibaGenre/Search/20220601"
-	ichibaRankingStd     = "IchibaItem/Ranking/20170628"
-	ichibaRankingNew     = "IchibaItem/Ranking/20220601"
+	ichibaItemSearchEndpoint  = "IchibaItem/Search/20220601"
+	ichibaGenreSearchEndpoint = "IchibaGenre/Search/20220601"
+	ichibaRankingEndpoint     = "IchibaItem/Ranking/20220601"
 )
 
 // --- Ichiba Item Search ---
@@ -45,22 +41,22 @@ type IchibaItemSearchParams struct {
 	NGKeyword    string
 
 	// Shipping
-	PurchaseType       int    // 0=normal, 1=periodic, 2=group
-	ShipOverseasFlag   int    // 1=overseas shippable only
-	ShipOverseasArea   string // area code
-	AsurakuFlag        int    // 1=next-day delivery
-	AsurakuArea        int    // area code
+	PurchaseType     int    // 0=normal, 1=periodic, 2=group
+	ShipOverseasFlag int    // 1=overseas shippable only
+	ShipOverseasArea string // area code
+	AsurakuFlag      int    // 1=next-day delivery
+	AsurakuArea      int    // area code
 
 	// Promotions & features
-	PointRateFlag            int // 1=point multiplier items only
-	PointRate                int // minimum multiplier (2-10)
-	PostageFlag              int // 1=free shipping only
-	CreditCardFlag           int // 1=credit card accepted only
-	GiftFlag                 int // 1=gift wrapping only
-	HasReviewFlag            int // 1=has reviews only
-	HasMovieFlag             int // 1=has video only
-	PamphletFlag             int // 1=has pamphlet only
-	AppointDeliveryDateFlag  int // 1=delivery date specifiable only
+	PointRateFlag           int // 1=point multiplier items only
+	PointRate               int // minimum multiplier (2-10)
+	PostageFlag             int // 1=free shipping only
+	CreditCardFlag          int // 1=credit card accepted only
+	GiftFlag                int // 1=gift wrapping only
+	HasReviewFlag           int // 1=has reviews only
+	HasMovieFlag            int // 1=has video only
+	PamphletFlag            int // 1=has pamphlet only
+	AppointDeliveryDateFlag int // 1=delivery date specifiable only
 
 	// Affiliate rate range
 	MinAffiliateRate float64
@@ -73,34 +69,24 @@ type IchibaItemSearchParams struct {
 
 func (c *Client) IchibaItemSearch(p IchibaItemSearchParams) (json.RawMessage, error) {
 	params := c.baseParams()
-
-	// Search targets
 	setIfNonEmpty(params, "keyword", p.Keyword)
 	setIfNonEmpty(params, "shopCode", p.ShopCode)
 	setIfNonEmpty(params, "itemCode", p.ItemCode)
 	setIfNonEmpty(params, "genreId", p.GenreID)
 	setIfNonEmpty(params, "tagId", p.TagID)
-
-	// Pagination
 	if p.Page > 0 {
 		params.Set("page", fmt.Sprint(p.Page))
 	}
 	if p.Hits > 0 {
 		params.Set("hits", fmt.Sprint(p.Hits))
 	}
-
-	// Price
 	if p.MinPrice > 0 {
 		params.Set("minPrice", fmt.Sprint(p.MinPrice))
 	}
 	if p.MaxPrice > 0 {
 		params.Set("maxPrice", fmt.Sprint(p.MaxPrice))
 	}
-
-	// Sort
 	setIfNonEmpty(params, "sort", p.Sort)
-
-	// Flags (only set when non-zero to avoid overriding API defaults)
 	setIntFlag(params, "availability", p.Availability)
 	setIntFlag(params, "field", p.Field)
 	setIntFlag(params, "carrier", p.Carrier)
@@ -131,8 +117,7 @@ func (c *Client) IchibaItemSearch(p IchibaItemSearchParams) (json.RawMessage, er
 	}
 	setIntFlag(params, "genreInformationFlag", p.GenreInformationFlag)
 	setIntFlag(params, "tagInformationFlag", p.TagInformationFlag)
-
-	return c.ichibaGet(ichibaItemSearchStd, ichibaItemSearchNew, params)
+	return c.ichibaGet(ichibaItemSearchEndpoint, params)
 }
 
 // setIntFlag sets the param only when val > 0.
@@ -151,7 +136,7 @@ type IchibaGenreSearchParams struct {
 func (c *Client) IchibaGenreSearch(p IchibaGenreSearchParams) (json.RawMessage, error) {
 	params := c.baseParams()
 	setIfNonEmpty(params, "genreId", p.GenreID)
-	return c.ichibaGet(ichibaGenreSearchStd, ichibaGenreSearchNew, params)
+	return c.ichibaGet(ichibaGenreSearchEndpoint, params)
 }
 
 // --- Ichiba Ranking ---
@@ -175,5 +160,5 @@ func (c *Client) IchibaRanking(p IchibaRankingParams) (json.RawMessage, error) {
 		params.Set("page", fmt.Sprint(p.Page))
 	}
 	setIfNonEmpty(params, "period", p.Period)
-	return c.ichibaGet(ichibaRankingStd, ichibaRankingNew, params)
+	return c.ichibaGet(ichibaRankingEndpoint, params)
 }

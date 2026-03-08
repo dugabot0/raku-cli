@@ -94,5 +94,5 @@ func (c *Client) GoraGolfCourseSearch(p GoraSearchParams) (json.RawMessage, erro
 	if p.Hits > 0 {
 		params.Set("hits", fmt.Sprint(p.Hits))
 	}
-	return c.get("Gora/GoraGolfCourseSearch/20170623", params)
+	return c.engineGet("Gora/GoraGolfCourseSearch/20170623", params)
 }
