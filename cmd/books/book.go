@@ -25,6 +25,7 @@ func newBookCmd() *cobra.Command {
 	}
 
 	f := c.Flags()
+	f.StringVar(&p.Keyword, "keyword", "", "Search keyword")
 	f.StringVar(&p.Title, "title", "", "Book title")
 	f.StringVar(&p.Author, "author", "", "Author name")
 	f.StringVar(&p.PublisherName, "publisher", "", "Publisher name")

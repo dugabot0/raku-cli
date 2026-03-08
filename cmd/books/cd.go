@@ -25,6 +25,7 @@ func newCDCmd() *cobra.Command {
 	}
 
 	f := c.Flags()
+	f.StringVar(&p.Keyword, "keyword", "", "Search keyword")
 	f.StringVar(&p.Title, "title", "", "CD title")
 	f.StringVar(&p.ArtistName, "artist", "", "Artist or composer name")
 	f.StringVar(&p.Label, "label", "", "Label/publisher name")

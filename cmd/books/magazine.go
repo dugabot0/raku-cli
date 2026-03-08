@@ -25,6 +25,7 @@ func newMagazineCmd() *cobra.Command {
 	}
 
 	f := c.Flags()
+	f.StringVar(&p.Keyword, "keyword", "", "Search keyword")
 	f.StringVar(&p.Title, "title", "", "Magazine title")
 	f.StringVar(&p.PublisherName, "publisher", "", "Publisher name")
 	f.StringVar(&p.JAN, "jan", "", "JAN barcode")

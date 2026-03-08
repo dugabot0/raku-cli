@@ -25,6 +25,7 @@ func newDVDCmd() *cobra.Command {
 	}
 
 	f := c.Flags()
+	f.StringVar(&p.Keyword, "keyword", "", "Search keyword")
 	f.StringVar(&p.Title, "title", "", "DVD/Blu-ray title")
 	f.StringVar(&p.ArtistName, "artist", "", "Performer or director name")
 	f.StringVar(&p.Label, "label", "", "Publisher name")

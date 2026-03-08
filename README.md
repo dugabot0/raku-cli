@@ -64,9 +64,9 @@ raku-cli books genre --genre-id 001 --pretty
 ### トラベル（Travel）
 
 ```bash
-raku-cli travel hotels --large-area hokkaido --pretty
-raku-cli travel hotel --hotel-no 123456 --pretty
-raku-cli travel vacant --large-area tokyo --checkin-date 2026-04-01 --checkout-date 2026-04-02 --adult-num 2 --pretty
+raku-cli travel hotels --large-area japan --middle-area hokkaido --small-area sapporo --detail-area A --pretty
+raku-cli travel hotel --hotel-no 901 --pretty
+raku-cli travel vacant --large-area japan --middle-area tokyo --small-area tokyo --detail-area A --checkin-date 2026-04-01 --checkout-date 2026-04-02 --adult-num 2 --pretty
 raku-cli travel area --pretty
 raku-cli travel ranking --genre onsen --pretty
 ```
