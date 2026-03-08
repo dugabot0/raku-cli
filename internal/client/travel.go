@@ -169,7 +169,7 @@ func (c *Client) TravelVacantHotelSearch(p TravelVacantParams) (json.RawMessage,
 
 func (c *Client) TravelGetAreaClass() (json.RawMessage, error) {
 	params := c.baseParams()
-	return c.get("Travel/GetAreaClass/20131024", params)
+	return c.get("Travel/GetAreaClass/20140210", params)
 }
 
 // --- Travel Hotel Ranking ---
