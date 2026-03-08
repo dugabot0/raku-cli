@@ -25,6 +25,7 @@ func newGameCmd() *cobra.Command {
 	}
 
 	f := c.Flags()
+	f.StringVar(&p.Keyword, "keyword", "", "Search keyword")
 	f.StringVar(&p.Title, "title", "", "Game title")
 	f.StringVar(&p.Hardware, "hardware", "", "Compatible platform/hardware")
 	f.StringVar(&p.MakerCode, "maker-code", "", "Manufacturer product code")
