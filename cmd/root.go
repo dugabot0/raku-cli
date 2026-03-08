@@ -53,7 +53,8 @@ func AddCommand(cmds ...*cobra.Command) {
 	rootCmd.AddCommand(cmds...)
 }
 
-// LoadRakutenClient loads config and returns a Client. Exits on missing credentials.
+// LoadRakutenClient loads config and returns a Client for standard APIs (Travel, Books, etc.)
+// Uses app_id (numeric). Exits on missing credentials.
 func LoadRakutenClient() *client.Client {
 	cfg, err := config.Load()
 	if err != nil {
@@ -65,6 +66,25 @@ func LoadRakutenClient() *client.Client {
 		os.Exit(ExitAuth)
 	}
 	return client.New(cfg.Rakuten.AppID, cfg.Rakuten.AffiliateID, cfg.Rakuten.AccessKey, cfg.Rakuten.Origin, flagTimeout)
+}
+
+// LoadIchibaClient loads config and returns a Client for the Ichiba API.
+// Prefers ichiba_app_id (UUID) if set, falls back to app_id.
+func LoadIchibaClient() *client.Client {
+	cfg, err := config.Load()
+	if err != nil {
+		logErr("load config: %v", err)
+		os.Exit(ExitGeneral)
+	}
+	appID := cfg.Rakuten.IchibaAppID
+	if appID == "" {
+		appID = cfg.Rakuten.AppID
+	}
+	if appID == "" {
+		logErr("Rakuten App ID not set — use RAKUTEN_ICHIBA_APP_ID or RAKUTEN_APP_ID env var or ~/.config/raku-cli/config.yaml")
+		os.Exit(ExitAuth)
+	}
+	return client.New(appID, cfg.Rakuten.AffiliateID, cfg.Rakuten.AccessKey, cfg.Rakuten.Origin, flagTimeout)
 }
 
 // HandleError maps errors to exit codes and terminates the process.

@@ -14,7 +14,7 @@ func newRankingCmd() *cobra.Command {
 		Use:   "ranking",
 		Short: "Get Ichiba item ranking",
 		RunE: func(c *cobra.Command, args []string) error {
-			cl := cmd.LoadRakutenClient()
+			cl := cmd.LoadIchibaClient()
 			result, err := cl.IchibaRanking(p)
 			if err != nil {
 				cmd.HandleError(err)

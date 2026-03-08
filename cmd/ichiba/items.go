@@ -14,7 +14,7 @@ func newItemsCmd() *cobra.Command {
 		Use:   "items",
 		Short: "Search Ichiba items",
 		RunE: func(c *cobra.Command, args []string) error {
-			cl := cmd.LoadRakutenClient()
+			cl := cmd.LoadIchibaClient()
 			result, err := cl.IchibaItemSearch(p)
 			if err != nil {
 				cmd.HandleError(err)

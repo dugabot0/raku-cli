@@ -14,7 +14,8 @@ type Config struct {
 }
 
 type RakutenConfig struct {
-	AppID       string `mapstructure:"app_id"`
+	AppID       string `mapstructure:"app_id"`        // numeric ID for standard APIs (app.rakuten.co.jp)
+	IchibaAppID string `mapstructure:"ichiba_app_id"` // UUID for Ichiba OpenAPI (openapi.rakuten.co.jp)
 	AffiliateID string `mapstructure:"affiliate_id"`
 	AccessKey   string `mapstructure:"access_key"` // for Ichiba OpenAPI
 	Origin      string `mapstructure:"origin"`     // e.g. https://www.yomitaku.com
@@ -39,6 +40,7 @@ func Load() (*Config, error) {
 	// Environment variable bindings
 	v.SetEnvPrefix("")
 	_ = v.BindEnv("rakuten.app_id", "RAKUTEN_APP_ID")
+	_ = v.BindEnv("rakuten.ichiba_app_id", "RAKUTEN_ICHIBA_APP_ID")
 	_ = v.BindEnv("rakuten.affiliate_id", "RAKUTEN_AFFILIATE_ID")
 	_ = v.BindEnv("rakuten.access_key", "RAKUTEN_ACCESS_KEY")
 	_ = v.BindEnv("rakuten.origin", "RAKUTEN_ORIGIN")

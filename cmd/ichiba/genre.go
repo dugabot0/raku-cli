@@ -14,7 +14,7 @@ func newGenreCmd() *cobra.Command {
 		Use:   "genre",
 		Short: "Search Ichiba genre information",
 		RunE: func(c *cobra.Command, args []string) error {
-			cl := cmd.LoadRakutenClient()
+			cl := cmd.LoadIchibaClient()
 			result, err := cl.IchibaGenreSearch(client.IchibaGenreSearchParams{
 				GenreID: genreID,
 			})
