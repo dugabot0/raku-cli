@@ -6,8 +6,10 @@ import (
 )
 
 const (
-	ichibaItemSearchEndpoint  = "IchibaItem/Search/20220601"
-	ichibaGenreSearchEndpoint = "IchibaGenre/Search/20170711"
+	// 20220601 / 20170711 were retired on 2026-08-17 (tag -> attribute migration);
+	// 20260401 is the replacement named in Rakuten's migration notice.
+	ichibaItemSearchEndpoint  = "IchibaItem/Search/20260401"
+	ichibaGenreSearchEndpoint = "IchibaGenre/Search/20260401"
 	ichibaRankingEndpoint     = "IchibaItem/Ranking/20220601"
 )
 
