@@ -3,6 +3,7 @@ package client
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"time"
@@ -100,7 +101,7 @@ func (c *Client) fetch(u string) (json.RawMessage, error) {
 	case http.StatusUnauthorized, http.StatusForbidden:
 		return nil, &AuthError{StatusCode: resp.StatusCode}
 	default:
-		return nil, &APIError{StatusCode: resp.StatusCode}
+		return nil, &APIError{StatusCode: resp.StatusCode, Message: errorBodyMessage(resp)}
 	}
 
 	var raw json.RawMessage
@@ -128,6 +129,23 @@ func (e *APIError) Error() string {
 		return e.Message
 	}
 	return fmt.Sprintf("API error (HTTP %d)", e.StatusCode)
+}
+
+// errorBodyMessage builds a message from Rakuten's JSON error body
+// ({"error": ..., "error_description": ...}), or "" if the body has none.
+func errorBodyMessage(resp *http.Response) string {
+	var body struct {
+		Error            string `json:"error"`
+		ErrorDescription string `json:"error_description"`
+	}
+	if err := json.NewDecoder(io.LimitReader(resp.Body, 64<<10)).Decode(&body); err != nil || body.Error == "" {
+		return ""
+	}
+	msg := fmt.Sprintf("API error (HTTP %d): %s", resp.StatusCode, body.Error)
+	if body.ErrorDescription != "" {
+		msg += " — " + body.ErrorDescription
+	}
+	return msg
 }
 
 // setIfNonEmpty sets key=val in p if val is non-empty.
